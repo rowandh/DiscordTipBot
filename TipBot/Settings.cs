@@ -19,7 +19,7 @@ namespace TipBot
 
         public string BotToken { get; private set; }
 
-        public string Ticker { get; } = "STRAT";
+        public string Ticker { get; } = "STRAX";
 
         public uint PregeneratedAddressesCount { get; } = 8000;
 
