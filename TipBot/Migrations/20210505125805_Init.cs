@@ -1,10 +1,9 @@
 ﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TipBot.Migrations
 {
-    public partial class init : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,8 +12,8 @@ namespace TipBot.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatorDiscordUserId = table.Column<decimal>(nullable: false),
+                        .Annotation("Sqlite:Autoincrement", true),
+                    CreatorDiscordUserId = table.Column<ulong>(nullable: false),
                     AnswerHash = table.Column<string>(nullable: true),
                     Question = table.Column<string>(nullable: true),
                     Reward = table.Column<decimal>(nullable: false),
@@ -31,11 +30,13 @@ namespace TipBot.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Sqlite:Autoincrement", true),
                     Amount = table.Column<decimal>(nullable: false),
                     CreationTime = table.Column<DateTime>(nullable: false),
-                    SenderDiscordUserId = table.Column<decimal>(nullable: false),
-                    ReceiverDiscordUserId = table.Column<decimal>(nullable: false)
+                    SenderDiscordUserId = table.Column<ulong>(nullable: false),
+                    SenderDiscordUserName = table.Column<string>(nullable: true),
+                    ReceiverDiscordUserId = table.Column<ulong>(nullable: false),
+                    ReceiverDiscordUserName = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -47,7 +48,7 @@ namespace TipBot.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Sqlite:Autoincrement", true),
                     Address = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -60,9 +61,9 @@ namespace TipBot.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Sqlite:Autoincrement", true),
                     Username = table.Column<string>(nullable: true),
-                    DiscordUserId = table.Column<decimal>(nullable: false),
+                    DiscordUserId = table.Column<ulong>(nullable: false),
                     Balance = table.Column<decimal>(nullable: false),
                     DepositAddress = table.Column<string>(nullable: true),
                     LastCheckedReceivedAmountByAddress = table.Column<decimal>(nullable: false)

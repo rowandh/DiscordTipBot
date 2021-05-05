@@ -2,7 +2,6 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TipBot.Database;
 
@@ -15,15 +14,12 @@ namespace TipBot.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.1-rtm-30846")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "2.2.0-rtm-35687");
 
             modelBuilder.Entity("TipBot.Database.Models.AddressModel", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Address");
 
@@ -35,15 +31,13 @@ namespace TipBot.Migrations
             modelBuilder.Entity("TipBot.Database.Models.DiscordUserModel", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<decimal>("Balance");
 
                     b.Property<string>("DepositAddress");
 
-                    b.Property<decimal>("DiscordUserId")
-                        .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 20, scale: 0)));
+                    b.Property<ulong>("DiscordUserId");
 
                     b.Property<decimal>("LastCheckedReceivedAmountByAddress");
 
@@ -57,15 +51,13 @@ namespace TipBot.Migrations
             modelBuilder.Entity("TipBot.Database.Models.QuizModel", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("AnswerHash");
 
                     b.Property<DateTime>("CreationTime");
 
-                    b.Property<decimal>("CreatorDiscordUserId")
-                        .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 20, scale: 0)));
+                    b.Property<ulong>("CreatorDiscordUserId");
 
                     b.Property<int>("DurationMinutes");
 
@@ -81,20 +73,17 @@ namespace TipBot.Migrations
             modelBuilder.Entity("TipBot.Database.Models.TipModel", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<decimal>("Amount");
 
                     b.Property<DateTime>("CreationTime");
 
-                    b.Property<decimal>("ReceiverDiscordUserId")
-                        .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 20, scale: 0)));
+                    b.Property<ulong>("ReceiverDiscordUserId");
 
                     b.Property<string>("ReceiverDiscordUserName");
 
-                    b.Property<decimal>("SenderDiscordUserId")
-                        .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 20, scale: 0)));
+                    b.Property<ulong>("SenderDiscordUserId");
 
                     b.Property<string>("SenderDiscordUserName");
 
