@@ -51,12 +51,11 @@ namespace TipBot.Logic.NodeIntegrations
             this.logger.Trace("()");
 
             // Unlock wallet.
-            if (this.coinService.IsWalletEncrypted())
-                this.coinService.WalletPassphrase(this.walletPassword, int.MaxValue);
+            this.coinService.WalletPassphrase(this.walletPassword, int.MaxValue);
 
             using (BotDbContext context = this.contextFactory.CreateContext())
             {
-                int addressesCount = context.UnusedAddresses.Count();
+                int addressesCount = context.UnusedAddresses.Count(a => !a.Used);
 
                 // Generate addresses when running for the first time.
                 if (addressesCount == 0)
@@ -84,7 +83,7 @@ namespace TipBot.Logic.NodeIntegrations
 
             try
             {
-                this.coinService.SendFrom(AccountName, address, amount);
+                this.coinService.SendToAddress(address, amount);
             }
             catch (RpcInternalServerErrorException e)
             {
@@ -108,11 +107,11 @@ namespace TipBot.Logic.NodeIntegrations
             this.logger.Trace("()");
             this.logger.Info("Database was not prefilled with addresses. Starting.");
 
-            int alreadyGenerated = this.coinService.GetAddressesByAccount(AccountName).Count;
+            int usedCount = context.UnusedAddresses.Count(a => a.Used);
 
-            this.logger.Info("{0} addresses are already in the wallet.", alreadyGenerated);
+            this.logger.Info("{0} addresses are already in the wallet.", usedCount);
 
-            long toGenerateCount = this.settings.PregeneratedAddressesCount - alreadyGenerated;
+            long toGenerateCount = this.settings.PregeneratedAddressesCount;
 
             this.logger.Info("Generating {0} addresses.", toGenerateCount);
 
@@ -120,7 +119,8 @@ namespace TipBot.Logic.NodeIntegrations
             {
                 try
                 {
-                    this.coinService.GetNewAddress(AccountName);
+                    var address = this.coinService.GetNewAddress();
+                    context.UnusedAddresses.Add(new AddressModel() { Address = address });
                 }
                 catch (RpcException e)
                 {
@@ -133,11 +133,6 @@ namespace TipBot.Logic.NodeIntegrations
                 if (i % 1000 == 0)
                     this.logger.Info("Generated {0} addresses.", i);
             }
-
-            List<string> allAddresses = this.coinService.GetAddressesByAccount(AccountName);
-
-            foreach (string address in allAddresses)
-                context.UnusedAddresses.Add(new AddressModel() { Address = address });
 
             context.SaveChanges();
             this.logger.Info("Addresses generated.");
@@ -202,7 +197,9 @@ namespace TipBot.Logic.NodeIntegrations
 
             foreach (DiscordUserModel user in usersToTrack)
             {
-                decimal receivedByAddress = this.coinService.GetReceivedByAddress(user.DepositAddress, this.settings.MinConfirmationsForDeposit);
+                // TODO does this work
+                var acc = this.coinService.SetAccount(user.DepositAddress, "account 0");
+                decimal receivedByAddress = this.coinService.GetBalance(minConf: this.settings.MinConfirmationsForDeposit);
 
                 if (receivedByAddress > user.LastCheckedReceivedAmountByAddress)
                 {

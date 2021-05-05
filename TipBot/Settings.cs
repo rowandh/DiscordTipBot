@@ -21,7 +21,7 @@ namespace TipBot
 
         public string Ticker { get; } = "STRAX";
 
-        public uint PregeneratedAddressesCount { get; } = 8000;
+        public uint PregeneratedAddressesCount { get; } = 1000;
 
         public int MinConfirmationsForDeposit { get; } = 16;
 

@@ -105,7 +105,9 @@ namespace TipBot.Logic
                         throw new OutOfDepositAddressesException();
                     }
 
-                    context.UnusedAddresses.Remove(unusedAddress);
+                    // Mark as used.
+                    unusedAddress.Used = true;
+                    //context.UnusedAddresses.Remove(unusedAddress);
 
                     depositAddress = unusedAddress.Address;
                     discordUser.DepositAddress = depositAddress;
