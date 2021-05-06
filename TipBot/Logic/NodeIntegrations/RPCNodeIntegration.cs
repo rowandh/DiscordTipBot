@@ -13,6 +13,21 @@ using TipBot.Database.Models;
 
 namespace TipBot.Logic.NodeIntegrations
 {
+    public class TestNodeIntegration : INodeIntegration
+    {
+        public void Initialize()
+        {
+        }
+
+        public void Withdraw(decimal amount, string address)
+        {
+        }
+
+        public void Dispose()
+        {
+        }
+    }
+
     public class RPCNodeIntegration : INodeIntegration
     {
         private const string AccountName = "account 0";
@@ -192,14 +207,12 @@ namespace TipBot.Logic.NodeIntegrations
         {
             this.logger.Trace("()");
 
-            List<DiscordUserModel> usersToTrack = context.Users.Where(x => x.DepositAddress != null).ToList();
+            List<DiscordUserModel> usersToTrack = context.Users.AsQueryable().Where(x => x.DepositAddress != null).ToList();
             this.logger.Trace("Tracking {0} users.", usersToTrack.Count);
 
             foreach (DiscordUserModel user in usersToTrack)
             {
-                // TODO does this work
-                var acc = this.coinService.SetAccount(user.DepositAddress, "account 0");
-                decimal receivedByAddress = this.coinService.GetBalance(minConf: this.settings.MinConfirmationsForDeposit);
+                decimal receivedByAddress = this.coinService.GetAddressBalance(user.DepositAddress, minConf: this.settings.MinConfirmationsForDeposit);
 
                 if (receivedByAddress > user.LastCheckedReceivedAmountByAddress)
                 {

@@ -93,7 +93,7 @@ namespace TipBot.Logic
                 {
                     this.logger.Trace("Assigning deposit address for '{0}'.", discordUser);
 
-                    AddressModel unusedAddress = context.UnusedAddresses.FirstOrDefault();
+                    AddressModel unusedAddress = context.UnusedAddresses.AsQueryable().Where(a => !a.Used).FirstOrDefault();
 
                     if (unusedAddress == null)
                     {
@@ -433,7 +433,7 @@ namespace TipBot.Logic
             {
                 DateTime earliestCreationDate = DateTime.Now - TimeSpan.FromDays(periodDays);
 
-                foreach (TipModel tip in context.TipsHistory.Where(x => x.CreationTime > earliestCreationDate))
+                foreach (TipModel tip in context.TipsHistory.AsQueryable().Where(x => x.CreationTime > earliestCreationDate))
                 {
                     UserViewModel tipper = bestTippers.SingleOrDefault(x => x.DiscordUserId == tip.SenderDiscordUserId);
                     UserViewModel beignTipped = bestBeingTipped.SingleOrDefault(x => x.DiscordUserId == tip.ReceiverDiscordUserId);

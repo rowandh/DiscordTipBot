@@ -41,8 +41,8 @@ namespace TipBot
         public bool EnableMigrations { get; private set; }
 
         /// <summary>Nickname of a user that will receive a message in case of a fatal error.</summary>
-        public string SupportUsername { get; } = "NoEscape0";
-        public string SupportDiscriminator { get; } = "5537";
+        public string SupportUsername { get; } = "Username";
+        public string SupportDiscriminator { get; } = "0979";
 
         /// <summary>DB connection string. Local db will be used if it's null.</summary>
         public string ConnectionString { get; private set; }
